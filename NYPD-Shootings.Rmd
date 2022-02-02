@@ -1,0 +1,133 @@
+---
+title: "NYPD Shooting Incident Data Report"
+author: "Aaron Li"
+date: "22/1/2022"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+## The data source
+
+We take the historic dataset that includes a list of every shooting incident occurred in NYC going back to 2006 through the end of the previous calendar year.
+You may find the same CSV file used in this report as below :
+
+<https://data.cityofnewyork.us/Public-Safety/NYPD-Shooting-Incident-Data-Historic-/833y-fsy8>
+
+Lets load up the raw data first :
+
+```{r datasource, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(lubridate)
+
+url_in <- "https://data.cityofnewyork.us/api/views/833y-fsy8/rows.csv"
+NYPD_shootings <- read_csv(url_in)
+NYPD_shootings
+
+```
+
+## Analysis 1 - Perpetrator race distribution
+As we see from the data structure, **PERP_RACE** represents the race of perpetrator in each shooting incidence. We would like to do a quick analysis on how it is distributed among various races and plot a pie chart on it.
+
+### Cleaning and counting
+We will do some cleaning to filter out the incidences that do not record the perpetrator race and based on what's left to arrive at the counts per race in the whole dataset:
+
+```{r perp race analysis, warning=FALSE, message=FALSE}
+NYPD_shootings_perp_races <- NYPD_shootings %>% 
+    filter(!is.na(PERP_RACE)) %>% 
+    select(PERP_RACE) %>%
+    count(PERP_RACE) %>%
+    rename(`Perpetrator Race` = PERP_RACE, Counts = n)
+NYPD_shootings_perp_races
+```
+
+### Plotting
+To have a clearer view on how perpetrator races are distributed, we will plot the count data as a pie chart:
+```{r plot perp race, warning=FALSE, message=FALSE}
+ggplot(NYPD_shootings_perp_races, aes(x="", y=Counts, fill=`Perpetrator Race`)) +
+  geom_bar(stat="identity", width=1) +
+  coord_polar("y", start=0)
+
+```
+
+## Analysis 2 - Shooting deaths by year
+**STATISTICAL_MURDER_FLAG** being TRUE indicates victim was shot dead in that particular incidence. We would like to count the shot death and number of the incidences year by year and find the trend and later on will work on a model to find out if these two values are somehow correlated.  
+
+### Cleaning and counting
+**STATISTICAL_MURDER_FLAG** and **OCCUR_DATE** are crucial to be retained while we drop off the rest of the unnecessary columns. We would also need to extract years out of **OCCUR_DATE** for grouping purpose later:
+
+```{r clean and extract, warning=FALSE, message=FALSE}
+NYPD_shooting_deaths <- NYPD_shootings %>% 
+    select(c(INCIDENT_KEY,OCCUR_DATE,STATISTICAL_MURDER_FLAG)) %>% 
+    mutate(month = month(mdy(OCCUR_DATE)), year = year(mdy(OCCUR_DATE)))
+NYPD_shooting_deaths
+```
+
+Now we count number of deaths and incidences by year:
+```{r counting, warning=FALSE, message=FALSE}
+NYPD_shooting_deaths_per_yr <- NYPD_shooting_deaths %>% 
+    group_by(year) %>% 
+    summarize(incidences = n(), deaths = sum(STATISTICAL_MURDER_FLAG == TRUE))
+NYPD_shooting_deaths_per_yr
+```
+
+### Plotting
+The plot reflects the change of shooting incidences and deaths over years:
+Now we count number of deaths and incidences by year:
+```{r plotting, warning=FALSE, message=FALSE}
+NYPD_shooting_deaths_per_yr %>% 
+     ggplot(aes(x = year, y = incidences)) +
+     geom_line(aes(color = "incidences"))  +
+     geom_point(aes(color = "incidences")) +
+     geom_line(aes(y = deaths, color = "deaths")) +
+     geom_point(aes(y= deaths, color = "deaths")) +
+     theme(legend.position="bottom",
+           axis.text.x = element_text(angle = 90)) +
+     labs(title = "NYPD shooting deaths per year", y= NULL)
+```
+We also find number of incidences and deaths to some extent related. 
+
+### Modelling and plotting the predicition
+Deaths per year is found changing along with incidences, so we assume it is linear to incidences. A model can be built as below:
+
+```{r modelling, warning=FALSE, message=FALSE}
+mod <- lm(deaths ~ incidences, data = NYPD_shooting_deaths_per_yr)
+summary(mod)
+```
+
+Lets fit the our data into the model and examine how close what's predicted to the actuals
+```{r examing, warning=FALSE, message=FALSE}
+NYPD_shooting_deaths_per_yr_pred <- NYPD_shooting_deaths_per_yr %>% mutate(pred = predict(mod))
+
+NYPD_shooting_deaths_per_yr_pred %>% ggplot() +
+    geom_point(aes(x=incidences, y=deaths),color = "blue") +
+    geom_point(aes(x=incidences, y= pred), color = "red") 
+```
+
+Above plot does reflect the fact deaths is linear to incidences by year.
+
+## Bias analysis in perpetrator race distribution
+```{r plot perp race again, warning=FALSE, message=FALSE, echo=FALSE}
+ggplot(NYPD_shootings_perp_races, aes(x="", y=Counts, fill=`Perpetrator Race`)) +
+  geom_bar(stat="identity", width=1) +
+  coord_polar("y", start=0)
+
+```
+From what is plotted above, one would conclude dark-skinned people will cause more shooting cases in the world. However, this is considered as one example of overgeneralization bias, as the dataset we are working on is limited to New York which has BLACK as one of the most popular races, so that the same result may not apply to cities like Manila where firarms are also widely available.
+
+
+
+---
+```{r ending}
+sessionInfo()
+```
+
+
+
+
