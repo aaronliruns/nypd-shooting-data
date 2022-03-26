@@ -79,19 +79,22 @@ The last iteration adds a sub view to link with the main view. When a borough is
 # Realization
 ## Altair implmentation
 Above low-fidelity designs are finally realized into the final interactive high-fidelity design using Altair.
-The Jyupyter notebook has been uploaded to Google Colab and be viewable at <https://colab.research.google.com/drive/1JQU-nRvBwN5sIEwgSKYSErkXcmQE9hvM?usp=sharing>
+The Jyupyter notebook has been uploaded to Google Colaboratory for viewing at <https://colab.research.google.com/drive/1JQU-nRvBwN5sIEwgSKYSErkXcmQE9hvM?usp=sharing>
 
 ## Key elements of design
 ![High-fdelity design .](nypd-hi-fi-select.png){width=90%}
 
 Here are the key elements put into the design:
 
-1. Selection
+1. Selection:\
 Once user selects interesting aspects of the data, a borough in this case, the main view make the data not selected less salient.
-2. Semantic zoom
+2. Semantic zoom:\
 When a borough is selected, the right view drill down into data representing selected borough only.
-3. Overview + Detail
-Implemented *overview* and *detail* two views: zoom into specific subsets of the data in the *detail (right view)* to enable
-the analyst to explore their data; Show where that detail is with respect to the larger dataset through an *overview (left view)* indicating where the detail is focused.
+3. Overview + Detail:\
+Implemented *overview* and *detail* two views: zoom into specific subsets of the data (borough) in the *detail (right view)* to enable the analyst to explore their data; Show where that detail is with respect to the larger dataset through an *overview (left view)* indicating where the detail is focused.
+4. Two view coordination:\
+This technique allows users to interact with data in *main view (left)* and to see that data in *another view (right)*.
+
+
 
 
