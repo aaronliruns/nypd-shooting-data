@@ -40,8 +40,7 @@ These are the questions to answer:
 
 * How many shooting incidents per precinct or borough in New York city? 
 * How many deaths caused by shooting per precinct or borough in New York city?
-* How many shooting incidents in a borough? How are the incidents distributed? 
-* Do they likely happen from few precincts with big number or most of precincts with small number each?
+* How many precincts are there in a borough? How are the incidents distributed in precincts?
 
 ## Tasks
 * The purpose (high-level) - User can use the the visualization to have good understand about shooting incidents happened in New York city with details and the distribution.
@@ -95,6 +94,47 @@ Implemented *overview* and *detail* two views: zoom into specific subsets of the
 4. Two view coordination:\
 This technique allows users to interact with data in *main view (left)* and to see that data in *another view (right)*.
 
+# Holistic Evaluation
+In order to determine whether the visualization generally achieves its goals, we would like to to **Insight-Based Evaluation**.
+
+## Goals and questions to answer
+Lets recap the goals we want to archive in the beginning of this analysis
+
+> The goal for working on this data set is to analyze the number of incidents and deaths per precinct and borough recorded by NYPD since 2006 to previous calendar year.
+These are the questions to answer:
+
+> * How many shooting incidents per precinct or borough in New York city? 
+> * How many deaths caused by shooting per precinct or borough in New York city?
+> * How many precincts are there in a borough? How are the incidents distributed in precincts?  
 
 
+## The people recruited to answer these questions
+Formative **Semi-structured interviews** conducted by having conversations with collaborators stemming from preplanned questions above.
+3 software engineer/data scientists were interviewed with randomized questions above. *Adhoc questions* were also given.
 
+1. [Jiang Yitao, Data scientist](https://www.linkedin.com/in/chiang1049/?originalSubdomain=sg)
+2. [Huang Yongqian, Software engineer](https://www.linkedin.com/in/huangyongqian/?originalSubdomain=cn)
+3. [Zhou Hongcheng, Data scientist](https://www.linkedin.com/in/hongcheng-zhou-asa-cfa-frm-a6a5b338/?originalSubdomain=sg)
+
+
+## The interviews
+Collaborators were given 15 minutes to learn about this analysis, including data source, goals and the visualizations.
+Interview questions and answers were documented as below 
+
+* Interview 1 - Jiang Yitao
+  + **Can you make out of number of shooting incidents per precinct or borough in New York city?**\ *"Yes, I can easily find number of shooting incidents from x-axis. From the legend I understand each color denotes a borough"* 
+  + **Can you find out what each data mark (circle) represent?**\ *"Well, I kind of figure it out by hovering mouse over them"*
+
+* Interview 2 - Huang Yongqian
+  + **Can you make out of number of shooting incidents per precinct or borough in New York city?**\ *"X-axis is number of shooting incidents, whereas y-axis is number of murders. Not hard to understand"* 
+  + **Can you find out what each data mark (circle) represent?**\ *"When I click on a circle, it seems the ones in same color got selected, which means each circle denotes a precinct in the borough"*
+  
+* Interview 3 - Zhou Hongcheng
+  + **Can you find out how many precincts are there in a borough?**\ *"Select a borough. Add up the number of datapoints each bar from the right view"* 
+  + **How are the incidents distributed in precincts?**\ *"Each bin is plotted as a bar whose height corresponds to how many precincts are in that bin. Not hard to figure out - e.g.,Number of incidents are distributed either low or high in Staten Island. Low in Manhattan"* 
+  + **Anything else you can see out of this vis?**\ *"You may want to look at the linear relationship between incidents and deaths"*
+  
+## Synthesis findings
+To conclude, from the interviews, the visualization generally serves the purpose and archive the goals. Futher analysis can be done in exploring the linear model between shooting incidents and deaths.  
+  
+  
